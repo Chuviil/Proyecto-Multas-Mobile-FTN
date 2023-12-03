@@ -1,1 +1,1 @@
-export const URL = 'BACKEND URL'
+export const URL = 'proyectomultas.azurewebsites.net'
