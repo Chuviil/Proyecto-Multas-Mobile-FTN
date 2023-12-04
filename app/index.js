@@ -14,7 +14,7 @@ export default function Page() {
                     headerShown: false,
                 }}
             />
-            <ImageBackground style={{flex: 1}} source={images.main_bg} resizeMode={"cover"}>
+            <ImageBackground style={{flex: 1, backgroundColor: COLORS.darkColor}} source={images.main_bg} resizeMode={"cover"}>
                 <View style={{flex: 1, paddingTop: insets.top, alignItems: "center"}}>
                     <Image resizeMode={"contain"} source={images.udla_logo_blanco} style={{width: 200, height: 72, marginTop: 45}}/>
                     <View style={{position: "absolute", bottom: 45, width: '80%'}}>
