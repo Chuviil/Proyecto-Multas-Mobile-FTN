@@ -1,1 +1,1 @@
-export const URL = 'proyectomultas.azurewebsites.net'
+export const URL = 'https://proyectomultas.azurewebsites.net'
