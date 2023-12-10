@@ -1,110 +1,21 @@
-import {FlatList, Image, Modal, SafeAreaView, Text, View} from "react-native";
+import {ActivityIndicator, FlatList, Image, RefreshControl, SafeAreaView, Text, View} from "react-native";
 import {Stack} from "expo-router";
 import MultasCard from "../../components/multas/multasCard/MultasCard";
 import {images, SIZES} from "../../constants";
-import {useState} from "react";
-
-const data = [
-    {
-        "MultaId": 1,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 2,
-        "Monto": 21.32,
-        "Razon": "Tomar agua Tomar agua Tomar agua Tomar agua Tomar agua Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 3,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 4,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 5,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 6,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 7,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 8,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 9,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 10,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 11,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 12,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 13,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 14,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 15,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    },
-    {
-        "MultaId": 16,
-        "Monto": 21.32,
-        "Razon": "Tomar agua",
-        "AyudanteId": "A00909988"
-    }
-]
+import useFetch from "../../hooks/useFetch";
+import {useCallback, useEffect, useState} from "react";
+import useAuthentication from "../../hooks/useAuth";
 
 const Multas = () => {
-    const [modalVisible, setModalVisible] = useState(false);
+    const { user } = useAuthentication();
+    const { data, error, loading, refetch } = useFetch(user ? `Ayudante/${user.IdBanner}/multas`: null);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        refetch();
+        setRefreshing(false);
+    }, [refetch]);
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -118,20 +29,32 @@ const Multas = () => {
                 }}
             />
             <View style={{flex: 1, padding: SIZES.large}}>
+                <Text style={{
+                    fontWeight: 'bold',
+                    fontSize: SIZES.xLarge,
+                    marginBottom: SIZES.large
+                }}>Bienvenid@, {user?.Nombre}</Text>
                 <Text
                     style={{
-                        textAlign: 'center',
-                        marginBottom: SIZES.large,
+                        marginBottom: SIZES.medium,
                         fontWeight: 'bold',
-                        fontSize: SIZES.xxLarge
+                        fontSize: SIZES.large
                     }}
                 >Multas
-                    por pagar</Text>
-                <FlatList
-                    data={data}
-                    renderItem={({item}) => <MultasCard item={item}/>}
-                    showsVerticalScrollIndicator={false}
-                />
+                    por pagar ({user?.IdBanner})</Text>
+                {loading ? (
+                    <ActivityIndicator/>
+                ) : error ? (
+                    <Text style={{textAlign: 'center'}}>Error al cargar la información</Text>
+                ) : (
+                    <FlatList
+                        data={data}
+                        renderItem={({item}) => <MultasCard item={item}/>}
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
+                    />
+                )
+                }
             </View>
         </SafeAreaView>
     )
