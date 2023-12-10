@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {URL} from '../constants';
+import { useEffect, useState } from 'react';
+import { URL } from '../constants';
 import axios from 'axios';
 
 const useFetch = (endpoint) => {
@@ -8,6 +8,11 @@ const useFetch = (endpoint) => {
     const [error, setError] = useState(null);
 
     const fetchData = async () => {
+        if (!endpoint) {
+            // Do nothing if the endpoint is null
+            return;
+        }
+
         console.log("Fetching from", endpoint);
 
         setLoading(true);
@@ -32,13 +37,10 @@ const useFetch = (endpoint) => {
     };
 
     useEffect(() => {
-        if (endpoint) {
-            fetchData();
-        }
+        fetchData();
     }, [endpoint]);
 
     const refetch = () => {
-        setLoading(true);
         fetchData();
     };
 
