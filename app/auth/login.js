@@ -1,12 +1,12 @@
 import {ActivityIndicator, Image, SafeAreaView, Text, View} from "react-native";
 import {router, Stack} from "expo-router";
-import {COLORS, images} from "../constants";
+import {COLORS, images} from "../../constants";
 import {StatusBar} from "expo-status-bar";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
-import MaterialButton from "../components/common/materialButton/MaterialButton";
-import TextField from "../components/common/textField/TextField";
+import MaterialButton from "../../components/common/materialButton/MaterialButton";
+import TextField from "../../components/common/textField/TextField";
 import {useState} from "react";
-import useAuthentication from "../hooks/useAuth";
+import useAuthentication from "../../hooks/useAuth";
 
 const Login = () => {
     const insets = useSafeAreaInsets();
