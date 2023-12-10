@@ -1,13 +1,24 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Image, RefreshControl, SafeAreaView, Text, View} from 'react-native';
-import {Stack, useNavigation} from 'expo-router';
+import {
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    Image,
+    RefreshControl,
+    SafeAreaView,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
+import {router, Stack, useNavigation} from 'expo-router';
 import MultasCard from '../../components/multas/multasCard/MultasCard';
 import {images, SIZES} from '../../constants';
 import useFetch from '../../hooks/useFetch';
 import useAuthentication from '../../hooks/useAuth';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 const Multas = () => {
-    const {user} = useAuthentication();
+    const {user, logout} = useAuthentication();
     const {data, error, loading, refetch} = useFetch(user ? `Ayudante/${user.IdBanner}/multas` : null);
     const [refreshing, setRefreshing] = useState(false);
     const navigation = useNavigation();
@@ -30,6 +41,26 @@ const Multas = () => {
         };
     }, [navigation, loading, refetch]);
 
+    const handleLogout = () => {
+        Alert.alert(
+            'Cerrar sesion',
+            'Estas seguro que deseas cerrar sesion?',
+            [
+                {
+                    text: 'No',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Si', onPress: () => {
+                        logout()
+                            .then(() => router.replace("/"))
+                    }
+                },
+            ]
+        );
+
+    };
+
     return (
         <SafeAreaView style={{flex: 1}}>
             <Stack.Screen
@@ -39,6 +70,22 @@ const Multas = () => {
                     ),
                     headerTitleAlign: 'center',
                     headerBackVisible: false,
+                    headerRight: () => (
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: '#C43240',
+                                width: 45,
+                                height: 45,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                borderRadius: 15,
+                                paddingLeft: 3
+                            }}
+                            onPress={handleLogout}
+                        >
+                            <MaterialCommunityIcons name="logout" size={22} color="white"/>
+                        </TouchableOpacity>
+                    )
                 }}
             />
             <View style={{flex: 1, padding: SIZES.large}}>
