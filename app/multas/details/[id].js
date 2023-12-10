@@ -1,12 +1,32 @@
 import {ActivityIndicator, Image, SafeAreaView, Text, View} from "react-native";
-import {Stack, useLocalSearchParams} from "expo-router";
+import {router, Stack, useLocalSearchParams} from "expo-router";
 import useFetch from "../../../hooks/useFetch";
-import {COLORS, FONT, images, SIZES} from "../../../constants";
+import {COLORS, images, SIZES, URL} from "../../../constants";
 import MaterialButton from "../../../components/common/materialButton/MaterialButton";
+import axios from "axios";
+import useAuthentication from "../../../hooks/useAuth";
 
 const MultasDetails = () => {
     const {id} = useLocalSearchParams();
+    const {token} = useAuthentication();
     const {loading, error, data} = useFetch(`Multa/${id}`);
+
+    const handlePagar = () => {
+        try {
+            axios.delete(
+                `${URL}/api/Multa/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            ).then(() => {
+                router.back();
+            })
+        } catch (e) {
+            alert(e.message);
+        }
+    }
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -26,7 +46,8 @@ const MultasDetails = () => {
                     <Text style={{textAlign: 'center'}}>Error al cargar la información</Text>
                 ) : (
                     <View style={{marginTop: 18}}>
-                        <Image source={{uri: "https://placehold.co/300x200.jpg"}} style={{width: 300, height: 200, alignSelf: "center"}}/>
+                        <Image source={{uri: "https://placehold.co/300x200.jpg"}}
+                               style={{width: 300, height: 200, alignSelf: "center"}}/>
                         <Text style={{marginTop: 18, fontWeight: "bold", fontSize: SIZES.large}}>Razon</Text>
                         <Text style={{fontSize: SIZES.medium}}>{data?.Razon}</Text>
                         <Text style={{fontWeight: "bold", fontSize: SIZES.large}}>Monto a pagar</Text>
@@ -36,7 +57,7 @@ const MultasDetails = () => {
                         <Text style={{fontWeight: "bold", fontSize: SIZES.large}}>Hora de emision</Text>
                         <Text style={{fontSize: SIZES.medium}}>{(new Date(data?.Emitida)).toLocaleTimeString()}</Text>
                         <View style={{marginTop: 18}}>
-                            <MaterialButton>
+                            <MaterialButton onPress={handlePagar}>
                                 Pagar
                             </MaterialButton>
                         </View>
