@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
     labelText: (color) => ({
         color: color ?? COLORS.primary
     }),
-    textInput: {
-        color: COLORS.lightColor,
+    textInput: (dark) => ({
+        color: dark ? '#000' : COLORS.lightColor,
         borderBottomWidth: 1,
         borderBottomColor: 'gray'
-    }
+    }),
 });
 
 export default styles;

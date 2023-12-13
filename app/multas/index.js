@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {
     ActivityIndicator,
-    Alert,
     FlatList,
     Image,
     RefreshControl,
@@ -16,9 +15,10 @@ import {images, SIZES} from '../../constants';
 import useFetch from '../../hooks/useFetch';
 import useAuthentication from '../../hooks/useAuth';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {StatusBar} from "expo-status-bar";
 
 const Multas = () => {
-    const {user, logout} = useAuthentication();
+    const {user} = useAuthentication();
     const {data, error, loading, refetch} = useFetch(user ? `Ayudante/${user.IdBanner}/multas` : null);
     const [refreshing, setRefreshing] = useState(false);
     const navigation = useNavigation();
@@ -41,26 +41,6 @@ const Multas = () => {
         };
     }, [navigation, loading, refetch]);
 
-    const handleLogout = () => {
-        Alert.alert(
-            'Cerrar sesion',
-            'Estas seguro que deseas cerrar sesion?',
-            [
-                {
-                    text: 'No',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Si', onPress: () => {
-                        logout()
-                            .then(() => router.replace("/"))
-                    }
-                },
-            ]
-        );
-
-    };
-
     return (
         <SafeAreaView style={{flex: 1}}>
             <Stack.Screen
@@ -73,17 +53,16 @@ const Multas = () => {
                     headerRight: () => (
                         <TouchableOpacity
                             style={{
-                                backgroundColor: '#C43240',
                                 width: 45,
                                 height: 45,
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 borderRadius: 15,
-                                paddingLeft: 3
+                                overflow: 'hidden'
                             }}
-                            onPress={handleLogout}
+                            onPress={() => router.push("/usuario/perfil")}
                         >
-                            <MaterialCommunityIcons name="logout" size={22} color="white"/>
+                            <Image  source={{uri: "https://placehold.co/45x45.png"}} style={{width: 45, height: 45}}/>
                         </TouchableOpacity>
                     )
                 }}
@@ -111,6 +90,7 @@ const Multas = () => {
                     />
                 )}
             </View>
+            <StatusBar style={"dark"}/>
         </SafeAreaView>
     );
 };
